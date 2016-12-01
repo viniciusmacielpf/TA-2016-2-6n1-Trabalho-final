@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/templates/template.xhtml">
+        <ui:define name="titulo">Manutenção de Imovel</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="formListagem">
+                <h:panelGroup rendered="#{!controleImovel.editando}">
+                    <p:messages/>
+                    <p:commandButton value="Novo" icon="ui-icon-plus"
+                                     actionListener="#{controleImovel.novo()}"
+                                     update="formEdicao formListagem"/>
+                    <p:dataTable value="#{controleImovel.dao.listaObjetos}" var="obj"
+                                 reflow="true" id="idListagem">
+                        <f:facet name="header">
+                            <div class="ui-fluid">
+                                <p:panelGrid columns="7" styleClass="ui-panelgrid-blank" layout="grid"
+                                             columnClasses="col-md-1, col-md-2, col-md-1, col-md-3, col-md-1
+                                    col-md-2, col-md-2">
+                                    <p:outputLabel value="Ordem:"             ></p:outputLabel>
+                                    <p:selectOneMenu value="#{controleImovel.dao.ordem}">
+                                        <f:selectItem itemLabel="Id" itemValue="id"></f:selectItem>
+                                        <f:selectItem itemLabel="Tipo" itemValue="tipo"></f:selectItem>
+                                        <f:selectItem itemLabel="status" itemValue="status"></f:selectItem>
+                                        <p:ajax update="idListagem"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Filtro" />
+                                    <p:inputText value="#{controleImovel.dao.filtro}" size="30" />
+                                    <p:commandButton value="Filtrar" update="idListagem" icon="ui-icon-search" />
+                                    <p:outputLabel value="Maximo de objetos: "/>
+                                    <p:inputNumber value="#{controleImovel.dao.maximoObjetos}"
+                                                   size="4" decimalPlaces="0" decimalSeparator="" thousandSeparator="" />
+                                                   
+                                </p:panelGrid>
+                            </div>
+                        </f:facet>
+                        <f:facet name="footer">
+                            <p:outputLabel value="#{controleImovel.dao.navegacao} &nbsp; &nbsp;"></p:outputLabel>
+                            <p:commandButton value="Primeiro" actionListener="#{controleImovel.dao.primerio()}" update="idListagem"/>
+                            <p:commandButton value="Anterior" actionListener="#{controleImovel.dao.anterior()}" update="idListagem"/>
+                            <p:commandButton value="Próximo" actionListener="#{controleImovel.dao.proximo()}" update="idListagem"/>
+                            <p:commandButton value="Último" actionListener="#{controleImovel.dao.ultimo()}" update="idListagem"/>
+                        </f:facet>
+                        <p:column headerText="ID">
+                            <p:outputLabel value="#{obj.id}"/>
+                        </p:column>
+                        <p:column headerText="Tipo">
+                            <p:outputLabel value="#{obj.tipo}"/>
+                        </p:column>
+                        <p:column headerText="Endereco">
+                            <p:outputLabel value="#{obj.endereco}"/>
+                        </p:column>
+                        <p:column headerText="Status">
+                            <p:outputLabel value="#{obj.status}"/>
+                        </p:column>
+                        <p:column headerText="Valor">
+                            <p:outputLabel value="#{obj.valor}">
+                            </p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Ações">
+                            <div align="center">
+                                <p:commandButton icon="ui-icon-pencil"
+                                                 actionListener="#{controleImovel.alterar(obj.id)}"
+                                                 process="@form"
+                                                 update=":formEdicao formListagem"/>
+                                <p:commandButton icon="ui-icon-trash"
+                                                 actionListener="#{controleImovel.remover(obj.id)}"
+                                                 process="@form" update=":formListagem"/>
+                            </div>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+            <ui:include src="/privado/imovel/formulario.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>
+
